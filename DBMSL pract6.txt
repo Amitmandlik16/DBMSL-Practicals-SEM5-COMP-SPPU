@@ -1,0 +1,71 @@
+Title: Cursors: (All types: Implicit, Explicit, Cursor FOR Loop, Parameterized Cursor)
+Write a PL/SQL block of code using parameterized Cursor, that will merge the data available in
+the newly created table N_RollCall with the data available in the table O_RollCall. If the data in
+the first table already exist in the second table then that data should be skipped.
+
+
+
+SQL> create table O_Rollcall(Rollno int ,name varchar2(20),branch varchar(15));
+
+Table created.
+
+SQL> create table N_Rollcall(Rollno int ,name varchar2(20),branch varchar(15));
+
+Table created.
+
+SQL> insert into O_Rollcall values(1,'Ganesh','computer');
+
+1 row created.
+
+SQL> insert into N_Rollcall values(1,'Ganesh','computer');
+
+1 row created.
+
+SQL> insert into N_Rollcall values(2,'Sahil','IT');
+
+1 row created.
+
+SQL> insert into O_Rollcall values(2,'Sahil','IT');
+
+1 row created.
+
+SQL> insert into O_Rollcall values(3,'Ganesh','Computer');
+
+1 row created.
+
+SQL> insert into N_Rollcall values(4,'Ramesh','ECE');
+
+1 row created.
+
+SQL> insert into N_Rollcall values(4,'Ramesh','ECE')
+SQL> desc O_Rollcall;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ ROLLNO                                             NUMBER(38)
+ NAME                                               VARCHAR2(20)
+ BRANCH                                             VARCHAR2(15)
+
+SQL> 
+  declare
+  rn O_Rollcall.ROllno%type;
+  nm O_Rollcall.Name%type;
+  bc O_Rollcall.Branch%type;
+  cursor c_Rollcall is select * from O_Rollcall minus select * from N_Rollcall;
+  begin
+  open c_Rollcall ;
+  loop
+  fetch c_Rollcall into rn,nm,bc;
+  exit when c_Rollcall%notfound;
+  insert into N_Rollcall values(rn,nm,bc);
+  dbms_output.put_line(rn||' '||nm||''||bc);
+  end loop;
+  close c_Rollcall;
+  dbms_output.put_line('Data inserteed into N_rollcall Sucessfull');
+  end;
+  /
+
+
+3 GaneshComputer
+Data inserteed into N_rollcall Sucessfull
+
+PL/SQL procedure successfully completed.

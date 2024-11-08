@@ -1,0 +1,114 @@
+Title : Named PL/SQL Block: PL/SQL Stored Procedure and Stored Function.
+Write a Stored Procedure namely proc_Grade for the categorization of student. If marks scored
+by students in examination is <=1500 and marks>=990 then student will be placed in distinction
+category if marks scored are between 989 and900 category is first class, if marks 899 and 825
+category is Higher Second Class
+Write a PL/SQL block for using procedure created with above requirement. Stud_Marks(name,
+total_marks) Result(Roll,Name, Class)
+
+
+
+SQL> create table Result(Roll int,name varchar(20),class varchar(15));
+
+Table created.
+
+SQL> drop table stud_marks;
+
+Table dropped.
+
+SQL> create table stud_marks(Roll int,name varchar(20),total_marks int);
+
+Table created.
+
+
+SQL> insert into stud_marks values(1,'Ganesh',1500);
+
+1 row created.
+
+SQL> insert into stud_marks values(2,'Sahil',1250);
+
+1 row created.
+
+SQL> insert into stud_marks values(3,'Om',915);
+
+1 row created.
+
+SQL> insert into stud_marks values(4,'Ramesh',855);
+
+1 row created.
+
+SQL> 
+CREATE OR REPLACE PROCEDURE proc_grade(r IN NUMBER)
+  AS
+      name VARCHAR2(20);
+      marks NUMBER;
+  BEGIN
+      -- Fetch the total_marks into the variable 'marks'
+      SELECT total_marks INTO marks FROM stud_marks WHERE Roll = r;
+
+      -- Fetch the student's name into the variable 'name'
+      SELECT name INTO name FROM stud_marks WHERE Roll = r;
+
+      -- Check the marks and determine the grade
+      IF marks BETWEEN 990 AND 1500 THEN
+          INSERT INTO Result VALUES (r, name, 'Distinction');
+          DBMS_OUTPUT.PUT_LINE('Roll no ' || r || ' is in Distinction class');
+      ELSIF marks BETWEEN 900 AND 989 THEN
+          INSERT INTO Result VALUES (r, name, 'First');
+          DBMS_OUTPUT.PUT_LINE('Roll no ' || r || ' is in First Class');
+      ELSIF marks BETWEEN 825 AND 899 THEN
+          INSERT INTO Result VALUES (r, name, 'HigherSecond');
+          DBMS_OUTPUT.PUT_LINE('Roll no ' || r || ' is in Higher Second Class');
+      ELSE
+          INSERT INTO Result VALUES (r, name, 'Pass');
+          DBMS_OUTPUT.PUT_LINE('Roll no ' || r || ' is Passed');
+      END IF;
+
+  -- Exception handling for when no record is found for the given Roll number
+  EXCEPTION
+      WHEN NO_DATA_FOUND THEN
+          DBMS_OUTPUT.PUT_LINE('Roll no ' || r || ' does not exist');
+  END;
+  /
+
+Procedure created.
+
+SQL> execute proc_grade(1);
+Roll no 1 is in Distinction class
+
+PL/SQL procedure successfully completed.
+
+SQL> select * from result;
+
+      ROLL NAME                 CLASS
+---------- -------------------- ---------------
+         1 Ganesh                 Distinction
+
+SQL> execute proc_grade(2);
+Roll no 2 is in Distinction class
+
+PL/SQL procedure successfully completed.
+
+SQL> execute proc_grade(3);
+Roll no 3 is in First Class
+
+PL/SQL procedure successfully completed.
+
+SQL> execute proc_grade(4);
+Roll no 4 is in Higher Second Class
+
+PL/SQL procedure successfully completed.
+
+SQL> execute proc_grade(5);
+Roll no 5 does not exist
+
+PL/SQL procedure successfully completed.
+
+SQL> select * from result;
+
+      ROLL NAME                 CLASS
+---------- -------------------- ---------------
+         1 Ganesh                 Distinction
+         2 Sahil                Distinction
+         3 Om                   First
+         4 Ramesh               HigherSecond

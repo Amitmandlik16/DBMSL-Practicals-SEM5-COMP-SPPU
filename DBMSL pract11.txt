@@ -1,0 +1,71 @@
+Aim: Implement Map reduces operation with suitable example using MongoDB
+
+
+test> db.createCollection("sales_data");
+{ ok: 1 }
+test> show dbs;
+admin    40.00 KiB
+config   72.00 KiB
+db      172.00 KiB
+dbmsl    40.00 KiB
+local    80.00 KiB
+test     88.00 KiB
+test1   152.00 KiB
+test>db.sales_data.insertMany([{product:"tablet",price:12000,quantity:8},{product:"laptop",price:50000,quantity:1},{product:"mobile",price:10000,quantity:2}])
+{
+  acknowledged: true,
+  insertedIds: {
+    '0': ObjectId('67248390cb01041c8f0d8190'),
+    '1': ObjectId('67248390cb01041c8f0d8191'),
+    '2': ObjectId('67248390cb01041c8f0d8192'),
+    '3': ObjectId('67248390cb01041c8f0d8193'),
+    '4': ObjectId('67248390cb01041c8f0d8194')
+  }
+}
+test> db.sales_data.find();
+[
+  {
+    _id: ObjectId('67248390cb01041c8f0d8190'),
+    product: 'laptop',
+    price: 50000,
+    quantity: 3
+  },
+  {
+    _id: ObjectId('67248390cb01041c8f0d8191'),
+    product: 'mobile',
+    price: 10000,
+    quantity: 5
+  },
+  {
+    _id: ObjectId('67248390cb01041c8f0d8192'),
+    product: 'tablet',
+    price: 12000,
+    quantity: 8
+  },
+  {
+    _id: ObjectId('67248390cb01041c8f0d8193'),
+    product: 'laptop',
+    price: 50000,
+    quantity: 1
+  },
+  {
+    _id: ObjectId('67248390cb01041c8f0d8194'),
+    product: 'mobile',
+    price: 10000,
+    quantity: 2
+  }
+]
+test> var mapFunction=function(){emit(this.product,this.price*this.quantity);};
+
+test> var reduceFunction=function(keyProduct,salesValues){return Array.sum(salesValues);};
+
+test> db.sales_data.mapReduce(mapFunction,reduceFunction,{out:'Total_sales'});
+DeprecationWarning: Collection.mapReduce() is deprecated. Use an aggregation instead.
+See https://docs.mongodb.com/manual/core/map-reduce for details.
+{ result: 'Total_sales', ok: 1 }
+test> db.Total_sales.find().pretty();
+[
+  { _id: 'mobile', value: 70000 },
+  { _id: 'laptop', value: 200000 },
+  { _id: 'tablet', value: 96000 }
+]

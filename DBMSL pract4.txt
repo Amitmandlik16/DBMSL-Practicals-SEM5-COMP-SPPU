@@ -1,0 +1,143 @@
+Title: Unnamed PL/SQL code block: Use of Control structure and Exception handling is mandatory.
+Write a PL/SQL block of code for the following requirements:-
+Schema:
+1. Borrower(Rollin, Name, DateofIssue, NameofBook, Status)
+2. Fine(Roll_no,Date,Amt)
+ Accept roll_no & name of book from user.
+ Check the number of days (from date of issue), if days are between 15 to 30 then fine amount
+will be Rs 5per day.
+ If no. of days>30, per day fine will be Rs 50 per day & for days less than 30, Rs. 5 per day.
+ After submitting the book, status will change from I to R.
+ If condition of fine is true, then details will be stored into fine table.
+
+
+
+SQL> create table borr(Rollno int,Name varchar(20),DOI Date,NOB varchar(20),Status varchar(1));
+
+Table created.
+
+SQL> insert into borr values(1,'Ganesh',to_date('20241020','yyyymmdd'),'Java Programming','I');
+
+1 row created.
+
+SQL> select * from borr;
+
+    ROLLNO NAME                 DOI       NOB                  S
+---------- -------------------- --------- -------------------- -
+         1 Ganesh                 20-OCT-24 Java Programming     I
+
+SQL> select * from borr;
+
+    ROLLNO NAME                 DOI       NOB                  S
+---------- -------------------- --------- -------------------- -
+         1 Ganesh                 20-OCT-24 Java Programming     I
+
+SQL> insert into borr values(2,'Ganesh',to_date('20241010','yyyymmdd'),'C++ Programming','I');
+
+1 row created.
+
+SQL> insert into borr values(3,'Sahil',to_date('20241015','yyyymmdd'),'Python Programming','I');
+
+1 row created.
+
+SQL> insert into borr values(4,'Ishan',to_date('20241030','yyyymmdd'),'C Programming','I');
+
+1 row created.
+
+SQL> select * from borr;
+
+    ROLLNO NAME                 DOI       NOB                  S
+---------- -------------------- --------- -------------------- -
+         1 Ganesh                 20-OCT-24 Java Programming     I
+         2 Ganesh               10-OCT-24 C++ Programming      I
+         3 Sahil                15-OCT-24 Python Programming   I
+         4 Ishan                30-OCT-24 C Programming        I
+
+SQL> create table fine(Rollno int,DOR Date ,Amt int);
+
+Table created.
+SQL> set serveroutput on;
+SQL> create or replace procedure book(r in number) as
+  2    c number;
+  3  begin
+  4    select to_number(trunc(sysdate - doi)) into c from borr where Rollno = r;
+  5
+  6    if c >= 15 and c <= 30 then
+  7      c := c - 15;
+  8      insert into fine(Rollno, DOR, Amt) values(r, sysdate, c * 5);
+  9      dbms_output.put_line('Fine for Rollno ' || r || ' is ' || (c * 5));
+ 10
+ 11    elsif c > 30 then
+ 12      c := c - 30;
+ 13      insert into fine(Rollno, DOR, Amt) values(r, sysdate, (c * 50) + 75);
+ 14      dbms_output.put_line('Fine for Rollno ' || r || ' is ' || ((c * 50) + 75));
+ 15
+ 16    end if;
+ 17
+ 18    update borr set status = 'R' where Rollno = r;
+ 19    dbms_output.put_line('Status updated for Rollno = ' || r || ' to R');
+ 20
+ 21  exception
+ 22    when no_data_found then
+ 23      dbms_output.put_line('No such Roll no exists');
+ 24  end;
+ 25  /
+
+Procedure created.
+
+SQL> execute book(1);
+Status updated for Rollno = 1 to R
+
+PL/SQL procedure successfully completed.
+
+SQL> select * from fine;
+
+no rows selected
+
+SQL> select * from borr;
+
+    ROLLNO NAME                 DOI       NOB                  S
+---------- -------------------- --------- -------------------- -
+         1 Ganesh                 20-OCT-24 Java Programming     R
+         2 Ganesh               10-OCT-24 C++ Programming      I
+         3 Sahil                15-OCT-24 Python Programming   I
+         4 Ishan                30-OCT-24 C Programming        I
+
+SQL> execute book(2);
+Fine for Rollno 2 is 30
+Status updated for Rollno = 2 to R
+
+PL/SQL procedure successfully completed.
+
+SQL> select * from fine;
+
+    ROLLNO DOR              AMT
+---------- --------- ----------
+         2 31-OCT-24         30
+
+SQL> execute book(3);
+Fine for Rollno 3 is 5
+Status updated for Rollno = 3 to R
+
+PL/SQL procedure successfully completed.
+
+SQL> execute book(4);
+Status updated for Rollno = 4 to R
+
+PL/SQL procedure successfully completed.
+
+SQL> select * from fine;
+
+    ROLLNO DOR              AMT
+---------- --------- ----------
+         2 31-OCT-24         30
+         3 31-OCT-24          5
+
+SQL> select * from borr;
+
+    ROLLNO NAME                 DOI       NOB                  S
+---------- -------------------- --------- -------------------- -
+         1 Ganesh                 20-OCT-24 Java Programming     R
+         2 Ganesh               10-OCT-24 C++ Programming      R
+         3 Sahil                15-OCT-24 Python Programming   R
+         4 Ishan                30-OCT-24 C Programming        R

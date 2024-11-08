@@ -1,0 +1,106 @@
+Title: Database Trigger (All Types: Row level and Statement level triggers, Before and After
+Triggers). Write a database trigger on Library table. The System should keep track of the records
+that are being updated or deleted. The old value of updated or deleted records should be added in
+Library_Audit table.
+
+
+
+SQL> create table library(Rollno int ,name varchar2(20),status varchar2(10));
+
+Table created.
+
+SQL> create table libraryaudit(Rollno int ,name varchar2(20),status varchar2(10));
+
+Table created.
+
+SQL> insert into library values(1,'Java Programming','I');
+
+1 row created.
+
+SQL> insert into library values(2,'C+++ Programming','I');
+
+1 row created.
+
+SQL> insert into library values(3,'C Programming','I');
+
+1 row created.
+
+SQL> insert into library values(4,'Python Programming','I');
+
+1 row created.
+
+SQL> 
+  create or replace trigger libtrig
+  before delete or update on library
+  referencing old as o new as n
+  for each row
+  begin
+  insert into libraryaudit values(:o.Rollno,:o.name,:o.status);
+  dbms_output.put_line('Changed Data Backup taken into libraryaudit Table');
+  end;
+  /
+
+Trigger created.
+
+SQL> show errors trigger libtrig;
+No errors.
+
+SQL> delete from library where Rollno=4;
+Changed Data Backup taken into libraryaudit Table
+
+1 row deleted.
+
+SQL> select * from library;
+
+    ROLLNO NAME                 STATUS
+---------- -------------------- ----------
+         1 Java Programming     I
+         2 C+++ Programming     I
+         3 C Programming        I
+
+SQL> select * from libraryaudit;
+
+    ROLLNO NAME                 STATUS
+---------- -------------------- ----------
+         4 Python Programming   I
+
+SQL> update library set Name='C++ Programming' where Rollno=2;
+Changed Data Backup taken into libraryaudit Table
+
+1 row updated.
+
+SQL> select * from libraryaudit;
+
+    ROLLNO NAME                 STATUS
+---------- -------------------- ----------
+         4 Python Programming   I
+         2 C+++ Programming     I
+
+SQL> select * from library;
+
+    ROLLNO NAME                 STATUS
+---------- -------------------- ----------
+         1 Java Programming     I
+         2 C++ Programming      I
+         3 C Programming        I
+
+SQL> update library set Status='R' where Rollno=2;
+Changed Data Backup taken into libraryaudit Table
+
+1 row updated.
+
+SQL> select * from library;
+
+    ROLLNO NAME                 STATUS
+---------- -------------------- ----------
+         1 Java Programming     I
+         2 C++ Programming      R
+         3 C Programming        I
+
+SQL> select * from libraryaudit;
+
+    ROLLNO NAME                 STATUS
+---------- -------------------- ----------
+         4 Python Programming   I
+         2 C+++ Programming     I
+         2 C++ Programming      I

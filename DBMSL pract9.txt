@@ -1,0 +1,161 @@
+Aim:Design and Develop MongoDB Queries using CRUD operations. (Use CRUD operations,
+SAVE method, logical operators)
+
+
+test> show dbs
+admin   40.00 KiB
+config  48.00 KiB
+local   72.00 KiB
+test> show tables
+
+test> use db;
+switched to db db
+db> show dbs
+admin   40.00 KiB
+config  48.00 KiB
+local   72.00 KiB
+db> db.createCollection("student")
+{ ok: 1 }
+db> show dbs
+admin   40.00 KiB
+config  48.00 KiB
+db       8.00 KiB
+local   72.00 KiB
+db> db.student.insertOne({name:"Ganesh ",age:19,city:"pune"});
+{
+  acknowledged: true,
+  insertedId: ObjectId('672479473e3a0baea30d8190')
+}
+db> db.student.insertMany([{name:"Ishan ",age:12,city:"Akole"},{name:"Sahil ",age:19,city:"Sangamner"}]);
+{
+  acknowledged: true,
+  insertedIds: {
+    '0': ObjectId('672479a33e3a0baea30d8191'),
+    '1': ObjectId('672479a33e3a0baea30d8192')
+  }
+}
+db> db.student.findOne({name:"Ganesh "});
+{
+  _id: ObjectId('672479473e3a0baea30d8190'),
+  name: 'Ganesh ',
+  age: 19,
+  city: 'pune'
+}
+db> db.student.findOne({name:"Ishan "});
+{
+  _id: ObjectId('672479a33e3a0baea30d8191'),
+  name: 'Ishan ',
+  age: 12,
+  city: 'Akole'
+}
+db> db.student.findOne();
+{
+  _id: ObjectId('672479473e3a0baea30d8190'),
+  name: 'Ganesh ',
+  age: 19,
+  city: 'pune'
+}
+db> db.student.find();
+[
+  {
+    _id: ObjectId('672479473e3a0baea30d8190'),
+    name: 'Ganesh ',
+    age: 19,
+    city: 'pune'
+  },
+  {
+    _id: ObjectId('672479a33e3a0baea30d8191'),
+    name: 'Ishan ',
+    age: 12,
+    city: 'Akole'
+  },
+  {
+    _id: ObjectId('672479a33e3a0baea30d8192'),
+    name: 'Sahil ',
+    age: 19,
+    city: 'Sangamner'
+  }
+]
+db> db.student.deleteOne({name:"Ishan "});
+{ acknowledged: true, deletedCount: 1 }
+db> db.student.find();
+[
+  {
+    _id: ObjectId('672479473e3a0baea30d8190'),
+    name: 'Ganesh ',
+    age: 19,
+    city: 'pune'
+  },
+  {
+    _id: ObjectId('672479a33e3a0baea30d8192'),
+    name: 'Sahil ',
+    age: 19,
+    city: 'Sangamner'
+  }
+]
+db> db.student.find().pretty();
+[
+  {
+    _id: ObjectId('672479473e3a0baea30d8190'),
+    name: 'Ganesh ',
+    age: 19,
+    city: 'pune'
+  },
+  {
+    _id: ObjectId('672479a33e3a0baea30d8192'),
+    name: 'Sahil ',
+    age: 19,
+    city: 'Sangamner'
+  }
+]
+db> db.student.find({Age:19}).pretty();
+
+db> db.student.find({age:19}).pretty();
+[
+  {
+    _id: ObjectId('672479473e3a0baea30d8190'),
+    name: 'Ganesh ',
+    age: 19,
+    city: 'pune'
+  },
+  {
+    _id: ObjectId('672479a33e3a0baea30d8192'),
+    name: 'Sahil ',
+    age: 19,
+    city: 'Sangamner'
+  }
+]
+db> db.student.find({city:"pune"}).pretty();
+[
+  {
+    _id: ObjectId('672479473e3a0baea30d8190'),
+    name: 'Ganesh ',
+    age: 19,
+    city: 'pune'
+  }
+]
+
+db> db.student.updateOne({name:"Ganesh "},{$set:{city:"Banglore"}});
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0
+}
+db> db.student.find().pretty();
+[
+  {
+    _id: ObjectId('672479473e3a0baea30d8190'),
+    name: 'Ganesh ',
+    age: 19,
+    city: 'Banglore'
+  },
+  {
+    _id: ObjectId('672479a33e3a0baea30d8192'),
+    name: 'Sahil ',
+    age: 19,
+    city: 'Sangamner'
+  }
+]
+db> db.student.dropDatabase();

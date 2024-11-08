@@ -1,0 +1,392 @@
+Title:
+a. Design and Develop SQL DDL statements which demonstrate the use of SQL objects
+such as Table, View, Index, Sequence, Synonym, different constraints etc.
+b. Write at least 10 SQL queries on the suitable database application using SQL DML
+statements which demonstrate the use of concepts like Insert, Select, Update, Delete with
+operators, functions, and set operator.
+
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| Ganesh               |
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+5 rows in set (0.01 sec)
+
+mysql> create database dbmsl;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> use dbmsl;
+Database changed
+mysql> create table student_info(Rollno int,Name varchar(34),Marks int,Primary key(Rollno));
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> desc student_info;
++--------+-------------+------+-----+---------+-------+
+| Field  | Type        | Null | Key | Default | Extra |
++--------+-------------+------+-----+---------+-------+
+| Rollno | int         | NO   | PRI | NULL    |       |
+| Name   | varchar(34) | YES  |     | NULL    |       |
+| Marks  | int         | YES  |     | NULL    |       |
++--------+-------------+------+-----+---------+-------+
+3 rows in set (0.01 sec)
+
+mysql> select * from student_info;
+Empty set (0.01 sec)
+
+mysql> insert into student_info values(1,"Ganesh");
+ERROR 1136 (21S01): Column count doesn't match value count at row 1
+mysql> insert into student_info values(1,"Ganesh",100);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from student_info;
++--------+------+-------+
+| Rollno | Name | Marks |
++--------+------+-------+
+|      1 | Ganesh |   100 |
++--------+------+-------+
+1 row in set (0.00 sec)
+
+mysql> insert into student_info(2,"Ishan",99);
+mysql> insert into student_info values(2,"Ishan",99);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from student_info;
++--------+-------+-------+
+| Rollno | Name  | Marks |
++--------+-------+-------+
+|      1 | Ganesh  |   100 |
+|      2 | Ishan |    99 |
++--------+-------+-------+
+2 rows in set (0.00 sec)
+
+mysql> insert into student_info values(3,"Sahil",95);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into student_info values(4,"Ganesh",80);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into student_info values(5,"Om",90;
+mysql> insert into student_info values(5,"Om",90);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from student_info;
++--------+--------+-------+
+| Rollno | Name   | Marks |
++--------+--------+-------+
+|      1 | Ganesh   |   100 |
+|      2 | Ishan  |    99 |
+|      3 | Sahil  |    95 |
+|      4 | Ganesh |    80 |
+|      5 | Om     |    90 |
++--------+--------+-------+
+5 rows in set (0.00 sec)
+
+mysql> create table account_info as select Rollno,Name from student_info;
+Query OK, 5 rows affected (0.03 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> select * from account_info;
++--------+--------+
+| Rollno | Name   |
++--------+--------+
+|      1 | Ganesh   |
+|      2 | Ishan  |
+|      3 | Sahil  |
+|      4 | Ganesh |
+|      5 | Om     |
++--------+--------+
+5 rows in set (0.00 sec)
+
+mysql> delete from account_info as Rollno=5;
+mysql> delete from account_info as Rollno='5';
+mysql> delete from account_info where Rollno='5';
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from account_info;
++--------+--------+
+| Rollno | Name   |
++--------+--------+
+|      1 | Ganesh   |
+|      2 | Ishan  |
+|      3 | Sahil  |
+|      4 | Ganesh |
++--------+--------+
+4 rows in set (0.00 sec)
+
+mysql> select * from student_info;
++--------+--------+-------+
+| Rollno | Name   | Marks |
++--------+--------+-------+
+|      1 | Ganesh   |   100 |
+|      2 | Ishan  |    99 |
+|      3 | Sahil  |    95 |
+|      4 | Ganesh |    80 |
+|      5 | Om     |    90 |
++--------+--------+-------+
+5 rows in set (0.00 sec)
+
+mysql> alter table account_info add(fee int);
+Query OK, 0 rows affected (0.02 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> select * from account_info;
++--------+--------+------+
+| Rollno | Name   | fee  |
++--------+--------+------+
+|      1 | Ganesh   | NULL |
+|      2 | Ishan  | NULL |
+|      3 | Sahil  | NULL |
+|      4 | Ganesh | NULL |
++--------+--------+------+
+4 rows in set (0.00 sec)
+
+mysql> update account_info set fee=1000 where Rollno=1;
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from account_info;
++--------+--------+------+
+| Rollno | Name   | fee  |
++--------+--------+------+
+|      1 | Ganesh   | 1000 |
+|      2 | Ishan  | NULL |
+|      3 | Sahil  | NULL |
+|      4 | Ganesh | NULL |
++--------+--------+------+
+4 rows in set (0.00 sec)
+
+mysql> update account_info set fee=1000 where Rollno;
+Query OK, 3 rows affected (0.01 sec)
+Rows matched: 4  Changed: 3  Warnings: 0
+
+mysql> select * from account_info;
++--------+--------+------+
+| Rollno | Name   | fee  |
++--------+--------+------+
+|      1 | Ganesh   | 1000 |
+|      2 | Ishan  | 1000 |
+|      3 | Sahil  | 1000 |
+|      4 | Ganesh | 1000 |
++--------+--------+------+
+4 rows in set (0.00 sec)
+
+mysql> update account_info set fee=5000 where Rollno;
+Query OK, 4 rows affected (0.00 sec)
+Rows matched: 4  Changed: 4  Warnings: 0
+
+mysql> select * from account_info;
++--------+--------+------+
+| Rollno | Name   | fee  |
++--------+--------+------+
+|      1 | Ganesh   | 5000 |
+|      2 | Ishan  | 5000 |
+|      3 | Sahil  | 5000 |
+|      4 | Ganesh | 5000 |
++--------+--------+------+
+4 rows in set (0.00 sec)
+
+mysql> update account_info set fee=1000 where Rollno=1;
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from account_info;
++--------+--------+------+
+| Rollno | Name   | fee  |
++--------+--------+------+
+|      1 | Ganesh   | 1000 |
+|      2 | Ishan  | 5000 |
+|      3 | Sahil  | 5000 |
+|      4 | Ganesh | 5000 |
++--------+--------+------+
+4 rows in set (0.00 sec)
+
+mysql> select count(*) from student_info;
++----------+
+| count(*) |
++----------+
+|        5 |
++----------+
+1 row in set (0.01 sec)
+
+mysql> select count(*) from account_info;
++----------+
+| count(*) |
++----------+
+|        4 |
++----------+
+1 row in set (0.00 sec)
+
+mysql> select * from student_info;
++--------+--------+-------+
+| Rollno | Name   | Marks |
++--------+--------+-------+
+|      1 | Ganesh   |   100 |
+|      2 | Ishan  |    99 |
+|      3 | Sahil  |    95 |
+|      4 | Ganesh |    80 |
+|      5 | Om     |    90 |
++--------+--------+-------+
+5 rows in set (0.00 sec)
+
+mysql> select * from account_info;
++--------+--------+------+
+| Rollno | Name   | fee  |
++--------+--------+------+
+|      1 | Ganesh   | 1000 |
+|      2 | Ishan  | 5000 |
+|      3 | Sahil  | 5000 |
+|      4 | Ganesh | 5000 |
++--------+--------+------+
+4 rows in set (0.00 sec)
+
+mysql> select max(marks) from student_info;
++------------+
+| max(marks) |
++------------+
+|        100 |
++------------+
+1 row in set (0.00 sec)
+
+mysql> select avg(marks) from student_info;
++------------+
+| avg(marks) |
++------------+
+|    92.8000 |
++------------+
+1 row in set (0.00 sec)
+
+mysql> select min(marks) from student_info;
++------------+
+| min(marks) |
++------------+
+|         80 |
++------------+
+1 row in set (0.00 sec)
+
+mysql> create view studentview as select Rollno,Name,Marks from student_info;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> select * from studentview;
++--------+--------+-------+
+| Rollno | Name   | Marks |
++--------+--------+-------+
+|      1 | Ganesh   |   100 |
+|      2 | Ishan  |    99 |
+|      3 | Sahil  |    95 |
+|      4 | Ganesh |    80 |
+|      5 | Om     |    90 |
++--------+--------+-------+
+5 rows in set (0.00 sec)
+
+mysql> delete from studentview where Rollno=4;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from student_info;
++--------+-------+-------+
+| Rollno | Name  | Marks |
++--------+-------+-------+
+|      1 | Ganesh  |   100 |
+|      2 | Ishan |    99 |
+|      3 | Sahil |    95 |
+|      5 | Om    |    90 |
++--------+-------+-------+
+4 rows in set (0.00 sec)
+
+mysql> drop view studentview;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> select * from student_info;
++--------+-------+-------+
+| Rollno | Name  | Marks |
++--------+-------+-------+
+|      1 | Ganesh  |   100 |
+|      2 | Ishan |    99 |
+|      3 | Sahil |    95 |
+|      5 | Om    |    90 |
++--------+-------+-------+
+4 rows in set (0.00 sec)
+
+mysql> select * from account_info;
++--------+--------+------+
+| Rollno | Name   | fee  |
++--------+--------+------+
+|      1 | Ganesh   | 1000 |
+|      2 | Ishan  | 5000 |
+|      3 | Sahil  | 5000 |
+|      4 | Ganesh | 5000 |
++--------+--------+------+
+4 rows in set (0.00 sec)
+
+mysql> CREATE VIEW studentview AS
+    -> SELECT a.Rollno, a.Name, a.Marks, b.fee
+    -> FROM student_info AS a
+    -> JOIN account_info AS b ON a.Rollno = b.Rollno;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> drop view studentview;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> create view studentview as select a.Rollno,a.Name,a.Marks,b.fee from student_info as a join account_info as b
+on a.Rollno=b.Rollno;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> select * from studentview;
++--------+-------+-------+------+
+| Rollno | Name  | Marks | fee  |
++--------+-------+-------+------+
+|      1 | Ganesh  |   100 | 1000 |
+|      2 | Ishan |    99 | 5000 |
+|      3 | Sahil |    95 | 5000 |
++--------+-------+-------+------+
+3 rows in set (0.00 sec)
+
+mysql> create index roll_index on student_info(Rollno);
+Query OK, 0 rows affected (0.05 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> desc student_info;
++--------+-------------+------+-----+---------+-------+
+| Field  | Type        | Null | Key | Default | Extra |
++--------+-------------+------+-----+---------+-------+
+| Rollno | int         | NO   | PRI | NULL    |       |
+| Name   | varchar(34) | YES  |     | NULL    |       |
+| Marks  | int         | YES  |     | NULL    |       |
++--------+-------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> alter table student_info modify Rollno int auto_increment;
+Query OK, 4 rows affected (0.09 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+mysql> select * from student_info;
++--------+-------+-------+
+| Rollno | Name  | Marks |
++--------+-------+-------+
+|      1 | Ganesh  |   100 |
+|      2 | Ishan |    99 |
+|      3 | Sahil |    95 |
+|      5 | Om    |    90 |
++--------+-------+-------+
+4 rows in set (0.00 sec)
+
+mysql> insert into student_info values(null,"Test",1);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select * from student_info;
++--------+-------+-------+
+| Rollno | Name  | Marks |
++--------+-------+-------+
+|      1 | Ganesh  |   100 |
+|      2 | Ishan |    99 |
+|      3 | Sahil |    95 |
+|      5 | Om    |    90 |
+|      6 | Test  |     1 |
++--------+-------+-------+
+5 rows in set (0.00 sec)
+

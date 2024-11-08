@@ -1,0 +1,160 @@
+Title: Design at least 10 SQL queries for suitable database application using SQL DML
+statements: all types of Join, Sub-Query and View.
+
+
+mysql> use dbmsl;
+Database changed
+mysql> create table officer(officer_id int,officer_name varchar(34),city varchar(20));
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> desc officer;
++--------------+-------------+------+-----+---------+-------+
+| Field        | Type        | Null | Key | Default | Extra |
++--------------+-------------+------+-----+---------+-------+
+| officer_id   | int         | YES  |     | NULL    |       |
+| officer_name | varchar(34) | YES  |     | NULL    |       |
+| city         | varchar(20) | YES  |     | NULL    |       |
++--------------+-------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> select * from officer;
+Empty set (0.00 sec)
+
+mysql> insert into officer values(1,"test1","sangamner");
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into officer values(2,"test2","sangamner");
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into officer values(3,"test3","pune");
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into officer values(4,"test4","mumbai");
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from officer;
++------------+--------------+-----------+
+| officer_id | officer_name | city      |
++------------+--------------+-----------+
+|          1 | test1        | sangamner |
+|          2 | test2        | sangamner |
+|          3 | test3        | pune      |
+|          4 | test4        | mumbai    |
++------------+--------------+-----------+
+4 rows in set (0.00 sec)
+
+mysql> create table salary(officer_id int primary key,salary int)
+    -> ;
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> insert into salary values(1,1000);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into salary values(2,2000);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into salary values(3,5000);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into salary values(4,1500);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from salary;
++------------+--------+
+| officer_id | salary |
++------------+--------+
+|          1 |   1000 |
+|          2 |   2000 |
+|          3 |   5000 |
+|          4 |   1500 |
++------------+--------+
+4 rows in set (0.00 sec)
+
+mysql> select officer.officer_name,officer.city,salary.salary from officer inner join salary on officer.officer_id=salary.off
+icer_id;
++--------------+-----------+--------+
+| officer_name | city      | salary |
++--------------+-----------+--------+
+| test1        | sangamner |   1000 |
+| test2        | sangamner |   2000 |
+| test3        | pune      |   5000 |
+| test4        | mumbai    |   1500 |
++--------------+-----------+--------+
+4 rows in set (0.00 sec)
+
+mysql> insert into officer values(7,"test7","Banglore");
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into salary values(6,4500);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select * from officer;
++------------+--------------+-----------+
+| officer_id | officer_name | city      |
++------------+--------------+-----------+
+|          1 | test1        | sangamner |
+|          2 | test2        | sangamner |
+|          3 | test3        | pune      |
+|          4 | test4        | mumbai    |
+|          7 | test7        | Banglore  |
++------------+--------------+-----------+
+5 rows in set (0.00 sec)
+
+mysql> select * from salary;
++------------+--------+
+| officer_id | salary |
++------------+--------+
+|          1 |   1000 |
+|          2 |   2000 |
+|          3 |   5000 |
+|          4 |   1500 |
+|          6 |   4500 |
++------------+--------+
+5 rows in set (0.00 sec)
+
+mysql> select officer.officer_name,officer.city,salary.salary from officer left join salary on officer.officer_id=salary.offi
+cer_id;
++--------------+-----------+--------+
+| officer_name | city      | salary |
++--------------+-----------+--------+
+| test1        | sangamner |   1000 |
+| test2        | sangamner |   2000 |
+| test3        | pune      |   5000 |
+| test4        | mumbai    |   1500 |
+| test7        | Banglore  |   NULL |
++--------------+-----------+--------+
+5 rows in set (0.00 sec)
+
+mysql> select officer.officer_name,officer.city,salary.salary from officer right join salary on officer.officer_id=salary.off
+icer_id;
++--------------+-----------+--------+
+| officer_name | city      | salary |
++--------------+-----------+--------+
+| test1        | sangamner |   1000 |
+| test2        | sangamner |   2000 |
+| test3        | pune      |   5000 |
+| test4        | mumbai    |   1500 |
+| NULL         | NULL      |   4500 |
++--------------+-----------+--------+
+5 rows in set (0.00 sec)
+
+mysql> select officer.officer_name,officer.city,salary.salary from officer left outer join salary on officer.officer_id=salar
+y.officer_id;
++--------------+-----------+--------+
+| officer_name | city      | salary |
++--------------+-----------+--------+
+| test1        | sangamner |   1000 |
+| test2        | sangamner |   2000 |
+| test3        | pune      |   5000 |
+| test4        | mumbai    |   1500 |
+| test7        | Banglore  |   NULL |
++--------------+-----------+--------+
+5 rows in set (0.00 sec)
+
+mysql> select officer_id from salary where salary=(select max(salary) from salary);
++------------+
+| officer_id |
++------------+
+|          3 |
++------------+
+1 row in set (0.00 sec)
